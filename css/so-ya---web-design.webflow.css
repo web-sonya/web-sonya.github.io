@@ -480,8 +480,26 @@ h2 {
 }
 
 @media screen and (min-width: 1280px) {
-  .container {
-    max-width: 1240px;
+  :root {
+    /* Stretchy side margins: 20px at 1280 → 40px at 1440, then the content
+       caps at --page-max wide and both margins grow equally to keep it centered. */
+    --page-max: 1360px;
+    --page-gutter: max(clamp(20px, 12.5% - 140px, 40px), (100% - var(--page-max)) / 2);
+  }
+
+  .container, .hero-section {
+    width: 100%;
+    max-width: none;
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: var(--page-gutter);
+    padding-right: var(--page-gutter);
+  }
+
+  .hero-container {
+    max-width: none;
+    margin-left: 0;
+    margin-right: 0;
   }
 
   .hero-section {
@@ -521,13 +539,6 @@ h2 {
     padding-bottom: 0;
   }
 
-  .container {
-    width: 100%;
-    max-width: 1440px;
-    padding-left: 40px;
-    padding-right: 40px;
-  }
-
   .nav-link.w--current {
     color: var(--bright-blue);
   }
@@ -547,8 +558,6 @@ h2 {
 
   .hero-container {
     max-height: 32rem;
-    margin-left: 40px;
-    margin-right: 40px;
   }
 
   .h1-wrap {
@@ -682,31 +691,22 @@ h2 {
 
   .stickers-wrap {
     top: -38rem;
+    left: -1.2rem;
   }
 }
 
 @media screen and (min-width: 1920px) {
-  .container {
-    margin-left: 240px;
-    margin-right: 240px;
-    padding-left: 0;
-    padding-right: 0;
+  :root {
+    --page-max: 1440px;
   }
 
   .hero-section {
     height: 1080px;
-    margin-left: 240px;
-    margin-right: 240px;
     padding-top: 10rem;
   }
 
   .h1 {
     font-size: 12rem;
-  }
-
-  .hero-container {
-    margin-left: 0;
-    margin-right: 0;
   }
 
   .me-sticker {
