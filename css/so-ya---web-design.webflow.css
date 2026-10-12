@@ -150,6 +150,7 @@ h2 {
 .hero-section {
   max-width: 1440px;
   padding-top: 12rem;
+  overflow-x: clip;
 }
 
 .h1 {
@@ -174,7 +175,7 @@ h2 {
 }
 
 .sponge-sticker {
-  width: 12rem;
+  width: min(10.8rem, 90%);
   transform: rotate(-45deg);
 }
 
@@ -187,7 +188,15 @@ h2 {
 }
 
 .inspo-sticker {
-  width: 12.5rem;
+  width: min(11.25rem, 90%);
+}
+
+.head-sticker {
+  width: min(10.08rem, 72%);
+}
+
+.hand-sticker {
+  width: min(7.425rem, 82.5%);
 }
 
 .projects-section {
@@ -576,7 +585,7 @@ h2 {
   }
 
   .sponge-sticker {
-    width: 13rem;
+    width: min(11.7rem, 90%);
     bottom: -18.4rem;
   }
 
@@ -593,9 +602,17 @@ h2 {
   }
 
   .inspo-sticker {
-    width: 14rem;
+    width: min(12.6rem, 90%);
     top: 18.2rem;
     left: -20rem;
+  }
+
+  .head-sticker {
+    width: min(12rem, 80%);
+  }
+
+  .hand-sticker {
+    width: min(8.25rem, 82.5%);
   }
 
   .projects-section {
@@ -719,7 +736,7 @@ h2 {
   }
 
   .sponge-sticker {
-    width: 14rem;
+    width: min(12.6rem, 90%);
   }
 
   .egg-sticker {
@@ -731,8 +748,17 @@ h2 {
   }
 
   .inspo-sticker {
-    width: 15rem;
+    width: min(13.5rem, 90%);
     left: -24rem;
+  }
+
+  .head-sticker {
+    width: 11.088rem;
+    max-width: none;
+  }
+
+  .hand-sticker {
+    width: min(9.9rem, 82.5%);
   }
 
   .projects-section {
@@ -770,6 +796,27 @@ h2 {
     height: 80%;
     margin-top: -6rem;
     top: -46.3rem;
+  }
+}
+
+/* Head sticker on 1280px+ desktops (wider screens: see the 1920px block above). */
+@media screen and (min-width: 1280px) and (max-width: 1439px) {
+  .head-sticker {
+    width: 6.93rem;
+    max-width: none;
+  }
+}
+
+@media screen and (min-width: 1440px) and (max-width: 1919px) {
+  .head-sticker {
+    width: 7.392rem;
+    max-width: none;
+  }
+}
+
+@media screen and (min-width: 1920px) and (max-width: 1920px) {
+  .head-sticker {
+    width: 8.855rem;
   }
 }
 
@@ -961,7 +1008,7 @@ h2 {
   }
 
   .sponge-sticker {
-    width: 105px;
+    width: min(94.5px, 90%);
     bottom: 12.5rem;
     left: -13.3rem;
   }
@@ -978,9 +1025,17 @@ h2 {
   }
 
   .inspo-sticker {
-    width: 100px;
+    width: min(90px, 90%);
     top: -19rem;
     left: 9rem;
+  }
+
+  .head-sticker {
+    width: min(6.48rem, 72%);
+  }
+
+  .hand-sticker {
+    width: min(75px, 82.5%);
   }
 
   .projects-section {
@@ -1135,7 +1190,7 @@ h2 {
   }
 
   .sponge-sticker {
-    width: 100px;
+    width: min(90px, 90%);
     bottom: 19.6rem;
     left: 0;
   }
@@ -1153,8 +1208,16 @@ h2 {
   }
 
   .inspo-sticker {
-    width: 120px;
+    width: min(108px, 90%);
     top: -25.3rem;
+  }
+
+  .head-sticker {
+    width: min(6.03rem, 72%);
+  }
+
+  .hand-sticker {
+    width: min(75px, 82.5%);
   }
 
   .projects-section {
@@ -1575,4 +1638,30 @@ h2 {
   font-weight: 500;
   font-style: normal;
   font-display: swap;
+}
+/* Head and rock-hand stickers span as many grid columns as sticker-sonya and eggy,
+   so their percentage width caps track those stickers' rendered size. They span all
+   rows so their height never stretches a row and shifts the other stickers. */
+.head-sticker {
+  grid-area: 1 / 1 / 4 / 4;
+}
+
+.hand-sticker {
+  grid-area: 1 / 8 / 4 / 10;
+}
+
+@media screen and (min-width: 1440px) {
+  .head-sticker {
+    grid-area: 1 / 1 / 4 / 3;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .head-sticker {
+    grid-area: 1 / 4 / 4 / 6;
+  }
+
+  .hand-sticker {
+    grid-area: 1 / 2 / 4 / 4;
+  }
 }
