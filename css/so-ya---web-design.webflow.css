@@ -174,6 +174,10 @@ h2 {
   transform: rotate(-20deg);
 }
 
+.alert-sticker {
+  width: min(12.375rem, 90%);
+}
+
 .sponge-sticker {
   width: min(10.8rem, 90%);
   transform: rotate(-45deg);
@@ -183,16 +187,12 @@ h2 {
   width: 9rem;
 }
 
-.flower-sticker {
-  width: 13rem;
+.star-sticker {
+  width: 15.6975rem;
 }
 
-.inspo-sticker {
+.chart-sticker {
   width: min(11.25rem, 90%);
-}
-
-.head-sticker {
-  width: min(10.08rem, 72%);
 }
 
 .hand-sticker {
@@ -584,6 +584,10 @@ h2 {
     top: 0;
   }
 
+  .alert-sticker {
+    width: min(13.5rem, 90%);
+  }
+
   .sponge-sticker {
     width: min(11.7rem, 90%);
     bottom: -18.4rem;
@@ -595,20 +599,16 @@ h2 {
     left: -24rem;
   }
 
-  .flower-sticker {
-    width: 16rem;
+  .star-sticker {
+    width: 19.32rem;
     bottom: 9.3rem;
     left: 62rem;
   }
 
-  .inspo-sticker {
+  .chart-sticker {
     width: min(12.6rem, 90%);
     top: 18.2rem;
     left: -20rem;
-  }
-
-  .head-sticker {
-    width: min(12rem, 80%);
   }
 
   .hand-sticker {
@@ -735,6 +735,10 @@ h2 {
     width: 18rem;
   }
 
+  .alert-sticker {
+    width: min(16.2rem, 90%);
+  }
+
   .sponge-sticker {
     width: min(12.6rem, 90%);
   }
@@ -743,18 +747,13 @@ h2 {
     width: 12rem;
   }
 
-  .flower-sticker {
-    width: 18rem;
+  .star-sticker {
+    width: 21.735rem;
   }
 
-  .inspo-sticker {
+  .chart-sticker {
     width: min(13.5rem, 90%);
     left: -24rem;
-  }
-
-  .head-sticker {
-    width: 11.088rem;
-    max-width: none;
   }
 
   .hand-sticker {
@@ -796,27 +795,6 @@ h2 {
     height: 80%;
     margin-top: -6rem;
     top: -46.3rem;
-  }
-}
-
-/* Head sticker on 1280px+ desktops (wider screens: see the 1920px block above). */
-@media screen and (min-width: 1280px) and (max-width: 1439px) {
-  .head-sticker {
-    width: 6.93rem;
-    max-width: none;
-  }
-}
-
-@media screen and (min-width: 1440px) and (max-width: 1919px) {
-  .head-sticker {
-    width: 7.392rem;
-    max-width: none;
-  }
-}
-
-@media screen and (min-width: 1920px) and (max-width: 1920px) {
-  .head-sticker {
-    width: 8.855rem;
   }
 }
 
@@ -901,12 +879,12 @@ h2 {
     left: 15rem;
   }
 
-  .flower-sticker {
+  .star-sticker {
     top: -725px;
     left: 10rem;
   }
 
-  .inspo-sticker {
+  .chart-sticker {
     top: -31rem;
     left: 13rem;
   }
@@ -1007,6 +985,10 @@ h2 {
     left: -8rem;
   }
 
+  .alert-sticker {
+    width: min(122.4px, 90%);
+  }
+
   .sponge-sticker {
     width: min(94.5px, 90%);
     bottom: 12.5rem;
@@ -1019,19 +1001,15 @@ h2 {
     left: 10rem;
   }
 
-  .flower-sticker {
-    width: 120px;
+  .star-sticker {
+    width: 144.9px;
     left: .1rem;
   }
 
-  .inspo-sticker {
+  .chart-sticker {
     width: min(90px, 90%);
     top: -19rem;
     left: 9rem;
-  }
-
-  .head-sticker {
-    width: min(6.48rem, 72%);
   }
 
   .hand-sticker {
@@ -1189,6 +1167,10 @@ h2 {
     left: -9.3rem;
   }
 
+  .alert-sticker {
+    width: min(117px, 90%);
+  }
+
   .sponge-sticker {
     width: min(90px, 90%);
     bottom: 19.6rem;
@@ -1201,19 +1183,15 @@ h2 {
     left: -5.3rem;
   }
 
-  .flower-sticker {
+  .star-sticker {
     top: -34.8rem;
     bottom: auto;
     left: 2.4rem;
   }
 
-  .inspo-sticker {
+  .chart-sticker {
     width: min(108px, 90%);
     top: -25.3rem;
-  }
-
-  .head-sticker {
-    width: min(6.03rem, 72%);
   }
 
   .hand-sticker {
@@ -1518,7 +1496,7 @@ h2 {
   }
 
   #w-node-_4a6c8955-9d92-3c94-d4bd-ff4f448db0b8-02e00c27 {
-    grid-area: 2 / 6 / 3 / 9;
+    grid-area: 2 / 6 / 3 / 10;
     justify-self: end;
   }
 
@@ -1608,6 +1586,7 @@ h2 {
   }
 
   #w-node-_4a6c8955-9d92-3c94-d4bd-ff4f448db0b8-02e00c27 {
+    grid-column: 3 / 6;
     justify-self: auto;
   }
 
@@ -1639,28 +1618,19 @@ h2 {
   font-style: normal;
   font-display: swap;
 }
-/* Head and rock-hand stickers span as many grid columns as sticker-sonya and eggy,
+
+/* The rock-hand and alert stickers span as many grid columns as eggy and the frog,
    so their percentage width caps track those stickers' rendered size. They span all
    rows so their height never stretches a row and shifts the other stickers. */
-.head-sticker {
-  grid-area: 1 / 1 / 4 / 4;
-}
-
 .hand-sticker {
   grid-area: 1 / 8 / 4 / 10;
 }
 
-@media screen and (min-width: 1440px) {
-  .head-sticker {
-    grid-area: 1 / 1 / 4 / 3;
-  }
+.alert-sticker {
+  grid-area: 1 / 4 / 4 / 6;
 }
 
 @media screen and (max-width: 767px) {
-  .head-sticker {
-    grid-area: 1 / 4 / 4 / 6;
-  }
-
   .hand-sticker {
     grid-area: 1 / 2 / 4 / 4;
   }

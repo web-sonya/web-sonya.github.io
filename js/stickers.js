@@ -1,6 +1,6 @@
 // Hero stickers: drift in straight lines across the hero and bump into each other.
-// Each sticker is a spinning disc: bumps are elastic, and friction at the contact
-// point turns glancing hits into rotation (and rotation back into a sideways kick).
+// Each sticker is a spinning disc, or a capsule if it's long: bumps are elastic, and friction
+// at the contact point turns glancing hits into rotation (and rotation back into a sideways kick).
 // Any sticker can be grabbed: drop it gently to park it, or fling it to scatter the rest.
 (function () {
   var hero = document.querySelector('.hero-section');
@@ -76,9 +76,22 @@
       s.oy = el.offsetTop + el.offsetHeight / 2;
       s.w = el.offsetWidth;
       s.h = el.offsetHeight;
-      s.r = (s.w + s.h) / 4 * 0.9;
-      s.m = s.r * s.r;
-      s.i = INERTIA * s.m * s.r * s.r;
+      // Weight and inertia as a disc of the sticker's average size...
+      var size = (s.w + s.h) / 4 * 0.9;
+      s.m = size * size;
+      s.i = INERTIA * s.m * size * size;
+      // ...but long stickers (the frog, the alert card, the rock hand) collide as a capsule
+      // along their long side, so they bump at their real ends. Round ones stay discs.
+      var longSide = Math.max(s.w, s.h), shortSide = Math.min(s.w, s.h);
+      if (longSide > shortSide * 1.3) {
+        s.r = shortSide / 2 * 0.9;
+        s.len = longSide / 2 * 0.9 - s.r;
+        s.axis = s.w >= s.h ? 0 : Math.PI / 2;
+      } else {
+        s.r = size;
+        s.len = 0;
+        s.axis = 0;
+      }
       if (prev) {
         // Keep each sticker at the same relative spot when the hero resizes.
         s.x = next.left + (s.x - prev.left) / ((prev.right - prev.left) || 1) * (next.right - next.left);
@@ -175,27 +188,83 @@
     if (s.y > maxY) { s.y = clamp(maxY, minY, maxY); s.vy = -Math.abs(s.vy); }
   }
 
+  // A sticker's outline in the physics: a capsule, i.e. a segment through its centre
+  // along its long side, padded by its radius. Round stickers have a zero-length segment.
+  function segment(s) {
+    var t = s.base * Math.PI / 180 + s.angle + s.axis;
+    var ux = Math.cos(t) * s.len, uy = Math.sin(t) * s.len;
+    return [s.x - ux, s.y - uy, s.x + ux, s.y + uy];
+  }
+
+  // Closest points between two segments [x1, y1, x2, y2].
+  function closest(p, q) {
+    var d1x = p[2] - p[0], d1y = p[3] - p[1];
+    var d2x = q[2] - q[0], d2y = q[3] - q[1];
+    var rx = p[0] - q[0], ry = p[1] - q[1];
+    var a = d1x * d1x + d1y * d1y, e = d2x * d2x + d2y * d2y;
+    var f = d2x * rx + d2y * ry;
+    var s, t;
+    if (a < 1e-9 && e < 1e-9) {
+      s = t = 0;
+    } else if (a < 1e-9) {
+      s = 0;
+      t = clamp(f / e, 0, 1);
+    } else {
+      var c = d1x * rx + d1y * ry;
+      if (e < 1e-9) {
+        t = 0;
+        s = clamp(-c / a, 0, 1);
+      } else {
+        var b = d1x * d2x + d1y * d2y, denom = a * e - b * b;
+        s = denom > 1e-9 ? clamp((b * f - c * e) / denom, 0, 1) : 0;
+        t = (b * s + f) / e;
+        if (t < 0) { t = 0; s = clamp(-c / a, 0, 1); }
+        else if (t > 1) { t = 1; s = clamp((b - c) / a, 0, 1); }
+      }
+    }
+    return { ax: p[0] + d1x * s, ay: p[1] + d1y * s, bx: q[0] + d2x * t, by: q[1] + d2y * t };
+  }
+
   function collide(a, b, dt) {
-    var dx = b.x - a.x;
-    var dy = b.y - a.y;
+    var cp = closest(segment(a), segment(b));
+    var dx = cp.bx - cp.ax;
+    var dy = cp.by - cp.ay;
     var dist = Math.sqrt(dx * dx + dy * dy);
     var min = a.r + b.r;
-    if (dist >= min || dist === 0) return;
+    if (dist >= min) return;
 
     // A held sticker is immovable: it has no inverse mass or inertia.
     var ima = a.held ? 0 : 1 / a.m, imb = b.held ? 0 : 1 / b.m;
     var iia = a.held ? 0 : 1 / a.i, iib = b.held ? 0 : 1 / b.i;
     if (ima + imb === 0) return;
 
-    var nx = dx / dist, ny = dy / dist; // normal, from a to b
-    var tx = -ny, ty = nx;              // tangent
-    var rvx = b.vx - a.vx;
-    var rvy = b.vy - a.vy;
+    var nx, ny; // normal, from a to b
+    if (dist > 1e-6) {
+      nx = dx / dist;
+      ny = dy / dist;
+    } else {
+      // The cores cross (two long stickers pushed through each other): use the centres.
+      var cx = b.x - a.x, cy = b.y - a.y, cd = Math.sqrt(cx * cx + cy * cy);
+      if (cd === 0) return;
+      nx = cx / cd;
+      ny = cy / cd;
+    }
+    var tx = -ny, ty = nx; // tangent
+
+    // The contact point, between the two surfaces, and where it sits relative to each centre.
+    var overlap = min - dist;
+    var px = cp.ax + nx * (a.r - overlap / 2);
+    var py = cp.ay + ny * (a.r - overlap / 2);
+    var rax = px - a.x, ray = py - a.y;
+    var rbx = px - b.x, rby = py - b.y;
+
+    // How fast the two surfaces move against each other there, spin included.
+    var rvx = (b.vx - b.spin * rby) - (a.vx - a.spin * ray);
+    var rvy = (b.vy + b.spin * rbx) - (a.vy + a.spin * rax);
     var vn = rvx * nx + rvy * ny;
 
     // A held sticker shoves others out of its way at once. Otherwise separate gradually,
     // so stickers that start out overlapping drift apart instead of jumping.
-    var overlap = min - dist;
     var push = (a.held || b.held) ? overlap : Math.min(overlap, (80 + Math.abs(vn)) * dt);
     a.x -= nx * push * ima / (ima + imb);
     a.y -= ny * push * ima / (ima + imb);
@@ -204,28 +273,34 @@
 
     if (vn >= 0) return; // already moving apart
 
-    // Head-on part: an elastic bounce. Anything that gets hit starts floating again.
-    var jn = -2 * vn / (ima + imb);
+    // Head-on part: an elastic bounce. A hit off a long sticker's centre also tips it round.
+    // Anything that gets hit starts floating again.
+    var ran = rax * ny - ray * nx, rbn = rbx * ny - rby * nx;
+    var jn = -2 * vn / (ima + imb + ran * ran * iia + rbn * rbn * iib);
     a.vx -= jn * nx * ima;
     a.vy -= jn * ny * ima;
     b.vx += jn * nx * imb;
     b.vy += jn * ny * imb;
+    a.kick -= jn * ran * iia;
+    b.kick += jn * rbn * iib;
     if (ima) a.parked = false;
     if (imb) b.parked = false;
 
     // Glancing part: the two surfaces slide past each other at the contact point.
     // Friction opposes that slide, which spins both stickers (in opposite directions)
     // and lets an already-spinning sticker kick the other one sideways.
-    var slide = rvx * tx + rvy * ty - a.spin * a.r - b.spin * b.r;
-    var jt = -slide / (ima + imb + a.r * a.r * iia + b.r * b.r * iib);
+    var rat = rax * ty - ray * tx, rbt = rbx * ty - rby * tx;
+    var slide = rvx * tx + rvy * ty;
+    var jt = -slide / (ima + imb + rat * rat * iia + rbt * rbt * iib);
     jt = clamp(jt, -FRICTION * jn, FRICTION * jn);
     a.vx -= jt * tx * ima;
     a.vy -= jt * ty * ima;
     b.vx += jt * tx * imb;
     b.vy += jt * ty * imb;
-    a.kick -= SPIN_GAIN * jt * a.r * iia;
-    b.kick -= SPIN_GAIN * jt * b.r * iib;
+    a.kick -= SPIN_GAIN * jt * rat * iia;
+    b.kick += SPIN_GAIN * jt * rbt * iib;
   }
+
 
   function render() {
     stickers.forEach(function (s) {
