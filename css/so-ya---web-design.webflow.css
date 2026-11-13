@@ -1731,7 +1731,7 @@ h2 {
 }
 
 .project-card .project-img {
-  cursor: zoom-in;
+  cursor: pointer;
 }
 
 .lightbox {
