@@ -1,0 +1,8 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="close-button">
+<circle id="Ellipse 360" cx="20" cy="20" r="20" fill="#2B43FF" fill-opacity="0.5"/>
+<g id="Cross">
+<path id="Union" d="M28.6064 12.6006L21.5195 19.6865L28.999 27.166L27.3984 28.7666L19.9189 21.2871L12.6006 28.6064L11 27.0059L18.3184 19.6865L11.3926 12.7607L12.9932 11.1602L19.9189 18.0859L27.0059 11L28.6064 12.6006Z" fill="white"/>
+</g>
+</g>
+</svg>

@@ -422,7 +422,7 @@ h2 {
   grid-column-gap: 1.875rem;
   grid-row-gap: 1.875rem;
   flex-flow: column;
-  padding-bottom: 40px;
+  padding-bottom: 50px;
   display: flex;
 }
 
@@ -450,6 +450,13 @@ h2 {
   font-weight: 500;
 }
 
+.button.is-disabled, .button.is-disabled:hover {
+  opacity: .6;
+  background-color: var(--white);
+  color: var(--bright-blue);
+  cursor: default;
+}
+
 .project-img {
   width: 100%;
 }
@@ -465,6 +472,10 @@ h2 {
 
 .project-card.invisible {
   display: none;
+}
+
+.project-card.wide {
+  grid-column: 1 / -1;
 }
 
 .project-caption {
@@ -708,8 +719,8 @@ h2 {
   }
 
   .about-project-wrap {
-    grid-column-gap: 320px;
-    grid-row-gap: 320px;
+    grid-column-gap: 40px;
+    grid-row-gap: 40px;
     justify-content: space-between;
     align-items: flex-start;
   }
@@ -945,8 +956,14 @@ h2 {
     grid-template-columns: 325px;
   }
 
+  /* Single column on tablets: crop the wide shot to the portrait cards' shape. */
+  .project-card.wide .project-img {
+    aspect-ratio: 1767 / 2364;
+    object-fit: cover;
+  }
+
   .closing-button {
-    padding: 18px;
+    padding: 16px 0 0 12px;
     position: absolute;
     inset: 0%;
   }
@@ -1109,7 +1126,7 @@ h2 {
   .project-paragraphs {
     grid-column-gap: 1.25rem;
     grid-row-gap: 1.25rem;
-    padding-bottom: 20px;
+    padding-bottom: 50px;
   }
 
   .h-paragraphs-wrap {
@@ -1123,9 +1140,17 @@ h2 {
     grid-template-columns: 1fr 1fr;
   }
 
+  .project-card {
+    justify-content: flex-start;
+  }
+
+  .project-card.wide .project-img {
+    aspect-ratio: auto;
+  }
+
   .about-project-wrap {
-    grid-column-gap: 50px;
-    grid-row-gap: 50px;
+    grid-column-gap: 60px;
+    grid-row-gap: 60px;
     flex-flow: column;
     justify-content: space-between;
     align-items: center;
@@ -1361,7 +1386,7 @@ h2 {
   }
 
   .project-paragraphs {
-    padding-bottom: 30px;
+    padding-bottom: 40px;
   }
 
   .button {
@@ -1691,5 +1716,166 @@ h2 {
 @media screen and (max-width: 767px) {
   .hand-sticker {
     grid-area: 1 / 2 / 4 / 4;
+  }
+}
+
+/* Project image lightbox (js/lightbox.js). Every screenshot opens in the same landscape box
+   (928×620 on desktop, 300×226 on mobile), centred on a lavender backing; the box shrinks to fit
+   narrower or shorter screens. */
+:root {
+  --lightbox-max-w: 928px;
+  --lightbox-ratio: 928 / 620;
+  --lightbox-chrome: 200px; /* close button, caption, gaps and padding around the box */
+  --lightbox-gap: 24px;
+  --lightbox-blur: 15px;
+}
+
+.project-card .project-img {
+  cursor: zoom-in;
+}
+
+.lightbox {
+  z-index: 1000;
+  overscroll-behavior: contain;
+  -webkit-backdrop-filter: blur(var(--lightbox-blur));
+  backdrop-filter: blur(var(--lightbox-blur));
+  background-color: #2b43ff66;
+  opacity: 0;
+  visibility: hidden;
+  padding: 40px;
+  transition: opacity .3s, visibility 0s .3s;
+  display: flex;
+  position: fixed;
+  inset: 0;
+  overflow-y: auto;
+}
+
+.lightbox.is-open {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity .3s;
+}
+
+.lightbox-content {
+  grid-row-gap: var(--lightbox-gap);
+  flex-flow: column;
+  align-items: flex-start;
+  width: min(var(--lightbox-max-w), 100%, (100vh - var(--lightbox-chrome)) * var(--lightbox-ratio));
+  width: min(var(--lightbox-max-w), 100%, (100dvh - var(--lightbox-chrome)) * var(--lightbox-ratio));
+  min-width: min(280px, 100%);
+  margin: auto;
+  transition: transform .3s;
+  display: flex;
+  transform: translateY(12px);
+}
+
+.lightbox.is-open .lightbox-content {
+  transform: none;
+}
+
+.lightbox-close {
+  cursor: pointer;
+  background: none;
+  border: 0;
+  border-radius: 50%;
+  padding: 0;
+  transition: opacity .35s;
+  display: block;
+  align-self: flex-end;
+}
+
+.lightbox-close:hover {
+  opacity: .8;
+}
+
+.lightbox-close:focus-visible {
+  outline: 2px solid var(--white);
+  outline-offset: 3px;
+}
+
+.lightbox-close img {
+  display: block;
+}
+
+.lightbox-close .is-mob {
+  display: none;
+}
+
+.lightbox-box {
+  aspect-ratio: var(--lightbox-ratio);
+  background-color: #e9ecff;
+  width: 100%;
+  position: relative;
+}
+
+.lightbox-img {
+  object-fit: contain;
+  width: 100%;
+  height: 100%;
+  display: block;
+  position: absolute;
+  inset: 0;
+}
+
+.lightbox-img.is-cover {
+  object-fit: cover;
+}
+
+.lightbox-caption {
+  color: var(--white);
+  letter-spacing: -.3px;
+  font-size: 20px;
+  line-height: 120%;
+}
+
+body.lightbox-locked {
+  overflow: hidden;
+}
+
+@media screen and (max-width: 767px) {
+  :root {
+    --lightbox-ratio: 300 / 226;
+    --lightbox-chrome: 120px;
+    --lightbox-gap: 14px;
+    --lightbox-blur: 10px;
+  }
+
+  .lightbox-img.is-cover.is-whole {
+    object-fit: contain;
+    background-color: #d8dfff;
+  }
+
+  .lightbox {
+    padding: 20px;
+  }
+
+  .lightbox-caption {
+    letter-spacing: -.24px;
+    font-size: 16px;
+  }
+}
+
+@media screen and (max-width: 479px) {
+  .lightbox {
+    padding: 20px 10px;
+  }
+
+  .lightbox-close .is-desk {
+    display: none;
+  }
+
+  .lightbox-close .is-mob {
+    display: block;
+  }
+
+  .lightbox-caption {
+    letter-spacing: -.21px;
+    font-size: 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lightbox, .lightbox.is-open, .lightbox-content {
+    transition: none;
   }
 }
