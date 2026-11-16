@@ -450,13 +450,6 @@ h2 {
   font-weight: 500;
 }
 
-.button.is-disabled, .button.is-disabled:hover {
-  opacity: .6;
-  background-color: var(--white);
-  color: var(--bright-blue);
-  cursor: default;
-}
-
 .project-img {
   width: 100%;
 }
